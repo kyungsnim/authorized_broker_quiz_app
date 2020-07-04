@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "870012510909",
+    "firebase_url": "https://authorized-broker-quiz-app.firebaseio.com",
+    "project_id": "authorized-broker-quiz-app",
+    "storage_bucket": "authorized-broker-quiz-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870012510909:android:7340ba2037f6f1b8b60dd4",
+        "android_client_info": {
+          "package_name": "com.example.authorized_broker_quiz_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "870012510909-5rghjsrmq0l691id6n8qjh9qge4j1u98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBj1Bej8-gqtJWT8jiXDER53y-lIaaGcyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870012510909-5rghjsrmq0l691id6n8qjh9qge4j1u98.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

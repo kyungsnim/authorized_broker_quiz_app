@@ -7,7 +7,7 @@ import 'package:authorized_broker_quiz_app/views/play_quiz/play_random_quiz.dart
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section1_random_quiz.dart';
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section2_random_quiz.dart';
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section_part_random_quiz.dart';
-import 'package:authorized_broker_quiz_app/views/score_history/ranking_page.dart';
+import 'package:authorized_broker_quiz_app/views/score_history/score_history.dart';
 import 'package:authorized_broker_quiz_app/widgets/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

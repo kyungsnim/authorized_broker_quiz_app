@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:authorized_broker_quiz_app/models/question_model.dart';
 import 'package:authorized_broker_quiz_app/services/database.dart';
+import 'package:authorized_broker_quiz_app/services/firebase_provider.dart';
 import 'package:authorized_broker_quiz_app/shared/globals.dart';
 import 'package:authorized_broker_quiz_app/widgets/quiz_play_widgets.dart';
 import 'package:authorized_broker_quiz_app/widgets/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../home.dart';
 //import 'package:pinch_zoom_image_updated/pinch_zoom_image_updated.dart';
@@ -36,6 +38,7 @@ class PlaySection1RandomQuiz extends StatefulWidget {
 }
 
 class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
+  FirebaseProvider fp;
   DatabaseService databaseService = new DatabaseService();
   QuerySnapshot questionSnapshot;
   QuerySnapshot questionSnapshot1;
@@ -135,6 +138,21 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
 
   Widget resultRichText(String part, double fontSize1, int correctPart,
       int partLength, double fontSize2) {
+
+    String currentUser = fp.getUser().toString();
+    int submitCnt1 = databaseService.getSubmitCnt(currentUser);
+
+    Map<String, dynamic> resultMap = {
+      "userId": currentUser,
+      // 최초로 푸는 경우(해당 컬럼이 비어있거나 0인 경우)
+      "submitCnt": submitCnt1 + 1,
+      "score": correctPart * 2.5,
+
+    };
+    databaseService.addSubjectResultData(
+        resultMap,
+        currentUser);
+
     return Column(
       children: <Widget>[
         RichText(
@@ -234,8 +252,8 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
                   SizedBox(
                     height: 20,
                   ),
-                  resultRichText('부동산학개론\t', 30, _correct1, part1QuizLength, 25),
-                  resultRichText('민법\t', 30, _correct2, part2QuizLength, 25),
+                  resultRichText('부동산학개론\t', 25, _correct1, part1QuizLength, 25),
+                  resultRichText('민법\t', 25, _correct2, part2QuizLength, 25),
                 ],
               ),
             ),
@@ -287,7 +305,7 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
               FlatButton(
                 child: Text(
                   "예",
-                  style: TextStyle(fontSize: 18, color: Colors.indigo),
+                  style: TextStyle(fontSize: 18, color: Global.blueGrey),
                 ),
                 onPressed: () {
                   setState(() {
@@ -299,7 +317,7 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
               FlatButton(
                 child: Text(
                   "아니요",
-                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                  style: TextStyle(fontSize: 18, color: Global.redSun),
                 ),
                 onPressed: () => Navigator.pop(context, false),
               ),
@@ -408,10 +426,10 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
                           TextSpan(
                               text: "현재 체크: $checkCnt개, ",
                               style: TextStyle(
-                                  fontSize: 18, color: Colors.indigo)),
+                                  fontSize: 18, color: Global.blueGrey)),
                           TextSpan(
                               text: "미체크: ${totalQuizLength - checkCnt}개\n",
-                              style: TextStyle(fontSize: 18, color: Colors.red))
+                              style: TextStyle(fontSize: 18, color: Global.redSun))
                         ]),
                   ),
             actions: <Widget>[
@@ -425,7 +443,7 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
               FlatButton(
                 child: Text(
                   "아니요",
-                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                  style: TextStyle(fontSize: 18, color: Global.redSun),
                 ),
                 onPressed: () => Navigator.pop(context, false),
               ),
@@ -435,13 +453,13 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
         false;
   }
 
-  // 20문제 넘게 풀었는지 체크
+  // 10문제 넘게 풀었는지 체크
   Future<bool> _underCntAlert() {
     return showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title:
-                Text("20문제 이상 풀어야 제출이 가능합니다.", style: TextStyle(fontSize: 18)),
+                Text("10문제 이상 풀어야 제출이 가능합니다.", style: TextStyle(fontSize: 18)),
             actions: <Widget>[
               FlatButton(
                 child: Text(
@@ -458,6 +476,7 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
 
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
@@ -497,20 +516,21 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
                       cnt++;
                     }
                   }
-                  var submitYn = false; // 100문제 확인용
+                  var submitYn = false; // 80문제 확인용
                   _correct = 0;
                   _correct1 = 0; // 결과화면 부동산학개론 정답개수
                   _correct2 = 0; // 결과화면 민법 정답개수
 
                   // 10문제 미만으로 풀고 제출하면 alert
-                  if (cnt < 10) {
-                    _underCntAlert();
-                  } else {
-                    // 최종 제출확인 팝업 (100개 다 풀었으면 db에 결과 반영, 다 안풀었으면 점수만 공개)
-                    submitYn = await _onPressedSubmitYn(cnt);
-                  }
+//                  if (cnt < 10) {
+//                    _underCntAlert();
+//                  } else {
+//                    // 최종 제출확인 팝업 (80개 다 풀었으면 db에 결과 반영, 다 안풀었으면 점수만 공개)
+//                    submitYn = await _onPressedSubmitYn(cnt);
+//                  }
+                  submitYn = await _onPressedSubmitYn(cnt);
 
-                  // 100문제 다 푼게 맞다면 정답률에 반영하고 결과 보여주자
+                  // 80문제 다 푼게 맞다면 정답률에 반영하고 결과 보여주자
                   if (submitYn && cnt == totalQuizLength) {
                     try {
                       // 정답 체크한 것에 한해 정답률에 반영하기!! 머리 빠개지는줄 알았네
@@ -658,7 +678,7 @@ class _PlaySection1RandomQuizState extends State<PlaySection1RandomQuiz> {
                     }
                     _showDialog();
                   } else if (submitYn) {
-                    // 100개 다 안풀었는데 그냥 제출한다고 할 때 결과만 보여주자
+                    // 80개 다 안풀었는데 그냥 제출한다고 할 때 결과만 보여주자
                     for (int i = 0; i < correct.length; i++) {
                       if (correct[i] == true) {
                         _correct++;

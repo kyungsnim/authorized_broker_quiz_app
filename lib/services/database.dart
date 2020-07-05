@@ -51,6 +51,31 @@ class DatabaseService {
       print(e.toString());
     });
   }
+  
+  // 점수 History에서 제출횟수 가져오기
+  getSubmitCnt(String userId) async {
+    int cnt;
+    await Firestore.instance
+        .collection("ScoreHistory")
+        .document(userId)
+        .get().then((value) {
+          cnt = value.data["submitCnt"];
+        });
+    print('cnt : $cnt');
+    return cnt;
+  }
+  // 과목 점수 db에 반영
+  Future<void> addSubjectResultData(
+      Map resultMap, String userId) async {
+    // random id 부여,
+    await Firestore.instance
+        .collection("ScoreHistory")
+        .document(userId)
+        .setData(resultMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
 
   // 제출결과 랭킹 db에 반영
   Future<void> addMockExamResultData(

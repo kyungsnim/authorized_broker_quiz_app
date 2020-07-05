@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
             create: (_) => FirebaseProvider()),
       ],
       child: MaterialApp(
-        title: "ADsP Quiz App",
+        title: "Authorized Broker Quiz App",
         debugShowCheckedModeBanner: false,
         home: AuthPage(),
       ),

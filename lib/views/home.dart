@@ -7,13 +7,13 @@ import 'package:authorized_broker_quiz_app/views/play_quiz/play_random_quiz.dart
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section1_random_quiz.dart';
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section2_random_quiz.dart';
 import 'package:authorized_broker_quiz_app/views/play_quiz/play_section_part_random_quiz.dart';
+import 'package:authorized_broker_quiz_app/views/score_history/ranking_page.dart';
 import 'package:authorized_broker_quiz_app/widgets/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'board/notice_page.dart';
 import 'play_quiz/play_mock_exam_quiz.dart';
-import 'ranking/ranking_page.dart';
 
 HomeState pageState;
 
@@ -239,7 +239,7 @@ class HomeState extends State<Home> {
                   quizList(),
                   NoticePage(),
   //                Board(),
-                  Ranking(),
+                  ScoreHistory(),
   //                Container(),
                 ],
               ),
